@@ -5,16 +5,19 @@ import colors from '../common/colors';
 
 const API_KEY = '64d2ce72205af2e25fc56ed089e82a82';
 
-export default class HomeScreen extends Component {
+export default class SearchScreen extends Component {
 
     state = {
-        searchText: '',
-        popularMovies: [],
+        fetchedMovies: [],
     }
 
     componentDidMount() {
-        const fetchPopularMovies = async () => {
-            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`, {
+        const { navigation, route } = this.props;
+        const { searchText } = route?.params;
+
+        const fetchResultMovies = async () => {
+            const response = await fetch(`
+https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchText}&page=1&include_adult=false`, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -23,40 +26,31 @@ export default class HomeScreen extends Component {
 
             const responseData = await response.json();
 
-            this.setState({ popularMovies: responseData.results });
+            this.setState({ fetchedMovies: responseData.results });
         }
 
-        fetchPopularMovies();
+        fetchResultMovies();
     }
 
     render() {
+        const { navigation, route } = this.props;
+        const { searchText } = route?.params;
 
-        const { navigation } = this.props;
+        console.log('fetchedMovies', this.state.fetchedMovies);
 
         return (
             <View style={{ paddingTop: StatusBar.currentHeight, flex: 1, backgroundColor: colors.primary, width: '100%', height: '100%' }}>
                 <StatusBar translucent backgroundColor='rgba(0,0,0,0)' />
-                <View style={{ paddingVertical: 20, flex: 1 }}>
-                    <View style={{ ...styles.input, borderRadius: 999, borderColor: '#fff', marginLeft: 10, marginRight: 10, width: '95%' }}>
-                        <TextInput
-                            placeholder="Search your favorite movie"
-                            placeholderTextColor='lightgray'
-                            style={styles.inputFont}
-                            onChangeText={text => this.setState(prevState => ({ ...prevState, searchText: text }))}
-                            autoCapitalize={'none'}
-                            value={this.state.searchText}
-                            onSubmitEditing={() => navigation.navigate('SearchScreen', {
-                                searchText: this.state.searchText,
-                            })}
-                        />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 15, }}>
+                    <Text style={{ color: '#fff' }} onPress={() => navigation.goBack()}>Back</Text>
+                    <Text style={{ color: '#fff' }}>{searchText}</Text>
+                    <Text></Text>
 
-                        <Text style={{ color: '#ccc', marginRight: 15 }} onPress={() => navigation.navigate('SearchScreen', {
-                            searchText: this.state.searchText,
-                        })}>Search</Text>
-                    </View>
+                </View>
+                <View style={{ paddingVertical: 20, flex: 1 }}>
                     <View style={{ flex: 1 }}>
                         <FlatList
-                            data={this.state.popularMovies}
+                            data={this.state.fetchedMovies}
                             // horizontal
                             numColumns={2}
                             keyExtractor={(item) => item.id.toString()}
@@ -80,7 +74,7 @@ export default class HomeScreen extends Component {
                         />
                     </View>
                 </View>
-            </View>
+            </View >
         )
     }
 }

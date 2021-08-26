@@ -5,30 +5,23 @@
  * @format
  * @flow strict-local
  */
- import 'react-native-gesture-handler';
- import React, { Component } from 'react'
- import { NavigationContainer } from '@react-navigation/native';
- import { createStackNavigator } from '@react-navigation/stack';
- import Login from "./app/screens/login"
- import HomeScreen from "./app/screens/homeScreen"
- 
- const Stack = createStackNavigator();
+import 'react-native-gesture-handler';
+import React, { Component } from 'react'
+import { StatusBar } from 'react-native';
+import { AppNavigator } from './app/screens/AppNavigator';
 
- export default class App extends Component {
- 
-     constructor(props){
-         super(props);
-     }
- 
-     render() {
-         return (
-            <NavigationContainer>
-                <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="Login" component={Login} />
-                    <Stack.Screen name="HomeScreen" component={HomeScreen} />
-                </Stack.Navigator>
-            </NavigationContainer>
-            
-         )
-     }
- }
+export default class App extends Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <>
+                <StatusBar translucent backgroundColor='rgba(0,0,0,0)' />
+                <AppNavigator />
+            </>
+        )
+    }
+}
