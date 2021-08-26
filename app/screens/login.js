@@ -11,20 +11,20 @@ export default class Login extends Component {
         super(props);
     }
 
-    componentDidMount() {
 
-        const storeData = async () => {
+
+        storeData = async () => {
             try {
-              const response = await Api.Auth('eve.holt@reqres.in', 'cityslicka');
+              const response = await Api.Auth(this.state.email, this.state.password);
               await AsyncStorage.setItem('@token', JSON.stringify(response));
+              this.props.navigation.navigate('HomeScreen')
             } catch (e) {
                 // saving error
                 throw e;
             }
         };
 
-        storeData();
-    };
+    
 
     // componentDidUpdate() {
     //     const getData = async () => {
@@ -43,10 +43,6 @@ export default class Login extends Component {
     //     getData();
     // }
     
-    login = async() =>{
-        this.props.navigation.navigate('HomeScreen')
-     }
-
     render() {
         return (
             <View style={styles.loginContainer}>
@@ -77,7 +73,7 @@ export default class Login extends Component {
                 <View style={styles.boxBtn}>
                     <TouchableOpacity
                         style={styles.btnLogin}
-                        onPress={this.login}>
+                        onPress={this.storeData}>
                         <Text style={styles.textBtnLogin}>Sign In</Text>
                     </TouchableOpacity>
                 </View>

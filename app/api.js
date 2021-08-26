@@ -14,12 +14,15 @@ class api {
         email,
         password,
       }),
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
-  }
+    })
+      const responseData = await response.json();
+      
+      if (!response.ok) {
+        return null
+      }
+      console.log('responseee: ', responseData)
+      return responseData;
+    }
 }
 
 export default new api();
